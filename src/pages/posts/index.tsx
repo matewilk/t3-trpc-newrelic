@@ -33,20 +33,20 @@ const PostsPage: NextPage = () => {
             transition={{
               duration: 0.4,
             }}
-            className="col-span-6 sm:col-span-3 lg:col-span-2"
+            className="col-span-6"
             key={post.id}
           >
             <Card
               href={`/posts/${post.id}`}
               header={post.title}
-              body={post.subtitle}
+              body={post.body}
             />
           </motion.li>
         ))}
       </motion.ul>
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={() => setLimit(limit + 2)}
+        onClick={() => setLimit(limit + 10)}
       >
         Load more
       </button>

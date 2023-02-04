@@ -2,24 +2,33 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
-import { posts } from "../../data/posts";
+type JsonPost = {
+  id: string;
+  title: string;
+  body: string;
+};
 
 export const postsRouter = createTRPCRouter({
   getPostById: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ input }) => {
+    .query(async ({ input }) => {
       const id = input?.id;
-      return posts.find((post) => post.id === id);
+
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${id}`
+      );
+      return (await response.json()) as unknown as Promise<JsonPost>;
     }),
 
   getAllPosts: publicProcedure
     .input(z.object({ limit: z.number(), page: z.number() }).optional())
-    .query(({ input }) => {
+    .query(async ({ input }) => {
       const limit = input?.limit || "4";
       const page = input?.page || "1";
-      return posts.slice(
-        (Number(page) - 1) * Number(limit),
-        Number(page) * Number(limit)
+
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts?_limit=${limit}&_page=${page}`
       );
+      return (await response.json()) as Promise<JsonPost[]>;
     }),
 });

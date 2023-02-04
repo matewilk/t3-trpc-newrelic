@@ -12,9 +12,9 @@ const Post: NextPage<PostProps> = ({ id }) => {
 
   return (
     <Layout>
-      <h2 className="text-3xl text-white">{data?.title}</h2>
-      <h3 className="text-2xl text-white">{data?.subtitle}</h3>
-      <p className="text-white">{data?.content}</p>
+      <h2 className="text-3xl text-white">{data?.id}</h2>
+      <h3 className="text-2xl text-white">{data?.title}</h3>
+      <p className="text-white">{data?.body}</p>
     </Layout>
   );
 };
