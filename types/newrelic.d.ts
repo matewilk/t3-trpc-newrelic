@@ -12,9 +12,3 @@ interface Agent {
 declare module "newrelic" {
   export const agent: Agent;
 }
-
-export function getBrowserTimingHeader(options?: {
-  nonce?: string;
-  hasToRemoveScriptWrapper?: boolean;
-  allowTransactionlessInjection?: boolean;
-}): string;

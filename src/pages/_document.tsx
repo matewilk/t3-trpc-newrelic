@@ -1,13 +1,15 @@
-const newrelic = require("newrelic");
+import newrelic from "newrelic";
 import type { DocumentContext, DocumentInitialProps } from "next/document";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
-// import { logger } from "../components/Logger";
+type DocumentProps = {
+  browserTimingHeader: string;
+};
 
-class MyDocument extends Document {
+class MyDocument extends Document<DocumentProps> {
   static async getInitialProps(
     ctx: DocumentContext
-  ): Promise<DocumentInitialProps> {
+  ): Promise<DocumentInitialProps & DocumentProps> {
     const initialProps = await Document.getInitialProps(ctx);
 
     /**
@@ -23,7 +25,6 @@ class MyDocument extends Document {
 
     const browserTimingHeader = newrelic.getBrowserTimingHeader({
       hasToRemoveScriptWrapper: true,
-      allowTransactionlessInjection: true,
     });
 
     return {
