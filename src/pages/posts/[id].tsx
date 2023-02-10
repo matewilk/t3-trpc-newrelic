@@ -1,4 +1,8 @@
-import { type NextPage } from "next";
+import {
+  type NextPage,
+  type GetServerSideProps,
+  type GetServerSidePropsResult,
+} from "next";
 
 import Layout from "../../components/layout";
 import { api } from "../../utils/api";
@@ -21,6 +25,16 @@ const Post: NextPage<PostProps> = ({ id }) => {
 
 export default Post;
 
-Post.getInitialProps = ({ query }): PostProps => {
-  return { id: query.id as string };
+export const getServerSideProps: GetServerSideProps<PostProps> = ({
+  query,
+}): Promise<GetServerSidePropsResult<PostProps>> => {
+  const id = query.id as string;
+
+  if (!id) {
+    return new Promise((resolve) =>
+      resolve({ props: { id: null as unknown as string } })
+    );
+  }
+
+  return new Promise((resolve) => resolve({ props: { id } }));
 };
