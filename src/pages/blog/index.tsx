@@ -15,7 +15,8 @@ export type Post = {
 const PostsPage: NextPage = () => {
   const [limit, setLimit] = useState(4);
   const [page] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(4);
+
   const { data } = api.posts.getAllPosts.useQuery(
     { limit, page },
     { refetchOnWindowFocus: true, keepPreviousData: true }
