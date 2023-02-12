@@ -28,7 +28,7 @@ const PostsPage: NextPage = () => {
         Blog <span className="text-[hsl(280,100%,70%)]">Posts</span>
       </h2>
       <motion.ul layout className="grid grid-cols-6 gap-7">
-        {data?.map((post) => (
+        {data?.map((post, index) => (
           <motion.li
             layout
             exit={{ scale: 0 }}
@@ -36,6 +36,9 @@ const PostsPage: NextPage = () => {
             animate={{ scale: 1 }}
             transition={{
               duration: 0.4,
+              delay: 0.2 * (index % pageSize),
+              type: "spring",
+              stiffness: 100,
             }}
             className="col-span-6"
             key={post.id}
