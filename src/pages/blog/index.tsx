@@ -24,7 +24,9 @@ const PostsPage: NextPage = () => {
 
   return (
     <Layout>
-      <h2 className="text-3xl text-white">Posts</h2>
+      <h2 className="pt-2 text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+        Blog <span className="text-[hsl(280,100%,70%)]">Posts</span>
+      </h2>
       <motion.ul layout className="grid grid-cols-6 gap-7">
         {data?.map((post) => (
           <motion.li
