@@ -18,8 +18,8 @@ const Home: NextPage = () => {
       </Head>
 
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-        New Relic <span className="text-[hsl(280,100%,70%)]">Next.js</span>{" "}
-        Integration
+        <span className="text-[hsl(280,100%,70%)]">New Relic</span> +{" "}
+        <span className="text-[hsl(280,100%,70%)]">T3 Stack</span> Integration
       </h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
         <Link

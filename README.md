@@ -45,7 +45,7 @@ This is a standard [T3 Stack](https://create.t3.gg/) project with two  additiona
 - `/blogs` - a list of blogs
 - `/posts/[id]` - a single blog post
 
-Both of these routes are fetch data using [tRPC](https://trpc.io) procedures which can be found in the [server/api/routers/posts.ts](src/server/api/routers/posts.ts) file.
+Both of these routes fetch data using [tRPC](https://trpc.io) procedures which can be found in the [server/api/routers/posts.ts](src/server/api/routers/posts.ts) file.
 - `getAllPosts` - fetches a list of blog posts
 - `getPostById` - fetches a single blog post
 

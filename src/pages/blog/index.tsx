@@ -39,6 +39,7 @@ const PostsPage: NextPage = () => {
               delay: 0.2 * (index % pageSize),
               type: "spring",
               stiffness: 100,
+              damping: 12,
             }}
             className="col-span-6"
             key={post.id}
