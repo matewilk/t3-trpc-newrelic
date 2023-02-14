@@ -5,8 +5,9 @@
 1. clone the repo
 2. run `npm install`
 3. copy New Relic License Ingest Key to `newrelic.cjs`
-4. run `npm run dev`
-5. navigate to `http://localhost:3000`
+4. renamme `example.env` to `.env`
+5. run `npm run dev`
+6. navigate to `http://localhost:3000`
 
 ### App setup
 
@@ -19,6 +20,32 @@ The app has the following pages:
 T3 Stack tRPC [ssr value](/src/utils/api.ts#L53) is left at default `false` so `http` calls happen on the client side. 
 
 ### New Relic Browser Agent
+
+#### Instrumentation
+
+The Browser agent is instrumented via the `newrelic` npm package (New Relic node agent). 
+In the `_document.tsx` file we import the `newrelic` package and call its `getBrowserTimingHeader` function to get the script for the Browser agent.
+
+```tsx
+  const browserTimingHeader = newrelic.getBrowserTimingHeader({
+    hasToRemoveScriptWrapper: true,
+  });
+```
+
+The `hasToRemoveScriptWrapper` option is set to `true` because we don't want the script to be wrapped in a `<script>` tag.
+
+Next we add the script to the `head` of the document:
+
+```tsx
+  <Head>
+    <script
+      type="text/javascript"
+      dangerouslySetInnerHTML={{ __html: this.props.browserTimingHeader }}
+    />
+  </Head>
+```
+
+The browser agent can also be instrumented using a copy->paste method. You can find the script in the New Relic UI.
 
 #### Main focus and functions of the agent
 - End-To-End Visibility - full stack visibility - identifies bottlenecks and performance issues from back-end to front-end including end-user experience.
@@ -54,6 +81,26 @@ T3 Stack tRPC [ssr value](/src/utils/api.ts#L53) is left at default `false` so `
   - metrics split by country
 
 ### New Relic Node.js Agent
+
+#### Instrumentation
+
+The Node.js agent is instrumented via the `newrelic` npm package and `@newrelic/next` npm package.
+`@newrelic/next` is New Relic's official Next.js plugin that automatically instruments Next.js applications.
+
+Typically you would instrument `@newrelic/next` via your `package.json` `scripts` section by running the package with `-r` option like this:
+
+```json
+  "scripts": {
+    "dev": "NODE_OPTIONS='-r @newrelic/next' next dev",
+    "start": "NODE_OPTIONS='-r @newrelic/next' next start"
+  }
+```
+
+It can be also instrumented with a custom `Next.js` server by runnin your server script with `-r` option like this:
+
+```json
+  node -r @newrelic/next server.js
+```
 
 #### Main focus and functions of the agent
 - Performance Monitoring
