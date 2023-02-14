@@ -1,5 +1,27 @@
 # Learn With Jason Demo
 
+### How this demo was created
+
+This demo was created using [`create-t3-app`](https://create.t3.gg/) with the followng options:
+
+- [Next.js](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [tRPC](https://trpc.io)
+- [Tailwind CSS](https://tailwindcss.com)
+- ~~[NextAuth.js](https://next-auth.js.org)~~
+- ~~[Prisma](https://prisma.io)~~
+
+It uses the recommended [T3 Stack](https://create.t3.gg/) setup.
+
+### What are the objectives of the demo
+- Show how to integrate New Relic Browser agent with Next.js
+- Show how to integrate New Relic Node.js agent with Next.js
+- Learn what New Relic can do for you
+- Learn how to correlate Logs, Traces, and Browser data in New Relic to achieve full observability of your application
+
+### A peak at what you will see in New Relic UI and what are we aiming for
+- show APM service map - the best way to visualize the relationships between services in our case relationships the client, server and third party services.
+
 ### How to start
 
 1. clone the repo
@@ -20,6 +42,14 @@ The app has the following pages:
 T3 Stack tRPC [ssr value](/src/utils/api.ts#L53) is left at default `false` so `http` calls happen on the client side. 
 
 ### New Relic Browser Agent
+
+### A peak at what you will see in the New Relic UI after instrumenting the Browser agent
+- Browser agent summary view for the application
+- mention a few other things that can be seen in the UI with certain use cases
+  - if you want to know which pages perform the worst/best
+  - if you want to know web vitals for your app or a specific page or a specific browser
+  - if you want to know what are the most popular browsers for your app
+  - if you want to know total time spent on ajax requests
 
 #### Instrumentation
 
@@ -45,7 +75,10 @@ Next we add the script to the `head` of the document:
   </Head>
 ```
 
-The browser agent can also be instrumented using a copy->paste method. You can find the script in the New Relic UI.
+The browser agent can also be instrumented using a copy->paste method. You can find the script in the New Relic UI should you be interested in that method.
+
+Let's take a sneak peak at what the script looks like in the page source.
+We can also see in the developer tools `network` tab that the script is loaded from `js-agent.newrelic.com` and executed.
 
 #### Main focus and functions of the agent
 - End-To-End Visibility - full stack visibility - identifies bottlenecks and performance issues from back-end to front-end including end-user experience.
@@ -59,7 +92,7 @@ The browser agent can also be instrumented using a copy->paste method. You can f
   - JS Stack Traces
 - Drive Business Value - measure and optimize performance to improve business outcomes.
 
-##### In addition to the above, the agent also provides:
+##### In addition to the above, the agent also provides (optional):
 - Page Views - page views and page load times
   - SPA page - route changes
   - Standard - Initial page load
@@ -82,6 +115,14 @@ The browser agent can also be instrumented using a copy->paste method. You can f
 
 ### New Relic Node.js Agent
 
+### A peak at what you will see in the New Relic UI after instrumenting the Node.js agent
+- Node.js agent summary view for the application
+  - focuses around the performacne of your backend services
+  - answers questions as to how your service performs relative to user expectations
+  - what is the average transaction time and whether it is within the acceptable range and are there any outliers
+  - how many requests are being made to your service and what percentage of them are successful/failed
+  - are there any logs or errors associated with your service (we will cover logs later in this demo)
+
 #### Instrumentation
 
 The Node.js agent is instrumented via the `newrelic` npm package and `@newrelic/next` npm package.
@@ -102,7 +143,7 @@ It can be also instrumented with a custom `Next.js` server by runnin your server
   node -r @newrelic/next server.js
 ```
 
-#### Main focus and functions of the agent
+#### Main focus and functions of the agent (optional)
 - Performance Monitoring
   - Identify and resolve performance issues
   - Identify and resolve errors
@@ -127,9 +168,9 @@ It can be also instrumented with a custom `Next.js` server by runnin your server
 - Dependencies
   - show the dependencies between services
 
-### Browser Agent Demo
+### Generating errors in the app
 
-#### Let's create a front-end error
+#### Front-end error
 
 Go to [[id].tsx](/src/pages/posts/[id].tsx) and on line 18 add:
 
@@ -151,7 +192,7 @@ Click on `Error Instances` tab and you should see:
 
 Remove the error and refresh the page. You should see the post details.
 
-#### Let's return 400 from the getPostById http call
+#### Return 400 from the getPostById http call
 
 Go to [[id].tsx](/src/pages/posts/[id].tsx) and on line 64 remove the exclamations mark from the `if` statement:
 
@@ -165,7 +206,7 @@ Go to [[id].tsx](/src/pages/posts/[id].tsx) and on line 64 remove the exclamatio
 
 This will cause the JsonPlaceholder API to return 400 error.
 
-#### Cause JS Error in the app (optional)
+#### Cause JS Error in the app
 
 Go to [[id].tsx](/src/pages/posts/[id].tsx) and on line 64 replace:
 
@@ -199,6 +240,18 @@ Revert the change.
 - Infrastructure data (not in this demo)
 
 With that contextual kowledge you can dig deeper into the pefromance of your app without having to manually search through logs.
+
+Benefits of using New Relic
+  - No need to setup log endpoints or collectors
+  - No need to set up log files and log rotation
+  - No need to parse logs
+
+New Relic node agent comes with support for `pino` and `winston` logging libraries out of the box.
+
+#### Pino
+
+Pino is a super fast Node.js logger. It is a JSON logger with a very low overhead.
+It comes with great [API](https://getpino.io/#/docs/api) and useful features like [redaction](https://getpino.io/#/docs/redaction) and [pretty printing](https://getpino.io/#/docs/pretty) (for development).
 
 Install `pino` npm package:
 
@@ -253,3 +306,5 @@ For logging errors you can use `logger.error`:
 ```ts
   logger.error(error, `Error fetching post with id ${id}`);
 ```
+
+### Alerting, alert policies and conditions and notifications
