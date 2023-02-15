@@ -172,15 +172,14 @@ It can be also instrumented with a custom `Next.js` server by runnin your server
 
 #### Front-end error
 
-Go to [[id].tsx](/src/pages/posts/[id].tsx) and on line 18 add:
+In [/pages/posts/[id].tsx](/src/pages/posts/[id].tsx) on line 34:
 
 ```tsx
-  if (!data?.id) {
-    throw new Error("Post not found");
-  }
+  {/* // Simulate a 10% chance of a browser error */}
+  {Math.random() <= 0.1 ? data!.id : data?.id}
 ```
 
-Go to `http://localhost:3000/blog` and click on any post. You should see an error pop up in the browser.
+Go to `http://localhost:3000/blog` and click on any post. You should see an error pop up in the browser. (with a 10% chance)
 
 Go to the New Relic Browser Agent and click on `JS Errors` in the left side menu. You should see a view with a list of error instances. Click on the first one and you should see the overview of the error.
 
@@ -192,45 +191,36 @@ Click on `Error Instances` tab and you should see:
 
 Remove the error and refresh the page. You should see the post details.
 
-#### Return 400 from the getPostById http call
+#### Return 400 from the getPostById http call (transaction error)
 
-Go to [[id].tsx](/src/pages/posts/[id].tsx) and on line 64 remove the exclamations mark from the `if` statement:
+In [/pages/posts/[id].tsx](/src/pages/posts/[id].tsx) on line 67 we simulate a 5% chance of a post `id` not existing:
 
 ```tsx
-  if (id) {
+  // Simulate a 5% chance of a post not existing
+  if (Math.random() <= 0.05) {
     return new Promise((resolve) =>
       resolve({ props: { id: null as unknown as string } })
     );
   }
 ```
 
-This will cause the JsonPlaceholder API to return 400 error.
+This will cause the JsonPlaceholder API (called in the client) to return 400 error.
 
-#### Cause JS Error in the app
+#### tRPC procedure error (transaction error)
 
-Go to [[id].tsx](/src/pages/posts/[id].tsx) and on line 64 replace:
+In [/server/api/routers/posts.ts](/src/server/api/routers/posts.ts) on line 20 we simulate a 5% chance of throwing an error from `getPostById` procedure:
 
-```tsx
-  if (id) {
-    return new Promise((resolve) =>
-      resolve({ props: { id: null as unknown as string } })
-    );
-  }
+```ts
+  // Simulate random error
+  if (Math.random() <= 0.05) throw new Error("Random getPostById error");
 ```
 
-with:
+Equally in the same file in `getAllPosts` procedure on line 34 we simulate a 5% chance of throwing an error:
 
-```tsx
-  if (id) {
-    return new Promise((resolve, reject) =>
-      reject({ props: { id: id as unknown as string } })
-    );
-  }
+```ts
+  // Simulate random error
+  if (Math.random() <= 0.05) throw new Error("Random getAllPosts error");
 ```
-
-This won't call the JsonPlaceholder API but will cause an error in the front-end which will be caught and reported to New Relic.
-
-Revert the change.
 
 ### Logs in context
 
@@ -267,7 +257,7 @@ import pino from "pino";
 export const logger = pino({});
 ```
 
-Go to [[id].tsx](/src/pages/posts/[id].tsx) 
+Go to [/pages/posts/[id].tsx](/src/pages/posts/[id].tsx) 
 
 At the top of the file import the logger:
 
@@ -275,36 +265,34 @@ At the top of the file import the logger:
 import { logger } from "../../utils/logger";
 ```
 
-on lin 71 add:
+on lin 73 add:
 
 ```tsx
   logger.info(`getServerSideProps: PostId - ${id}`);
 ```
 
-Go to [posts.ts](/src/server/api/routers/posts.ts)
-
-import the logger:
+We can also add `logger.error` in our error simulating condition like so:
 
 ```ts
-import { logger } from "../../../utils/logger";
+  logger.error("Post not found");
 ```
 
-add `logger.info` to the `getPostById` function:
+Pino allows passing custom properties to the log message. We can add `postId` property to the log message like so:
 
 ```ts
-  logger.info(`Fetching post with id ${id}`);
+  logger.error({ postId: id }, "Post not found");
 ```
 
-You can also pass additional attributes:
+Let's grap the error handled in the `createNextApiHander` by the `tRPC` router and send it to New Relic.
+
+In [/pages/api/trpc/[trpc].ts](/src/pages/api/trpc/[trpc].ts) in the `onError` handler add:
 
 ```ts
-  logger.info({ postId: id, procedure: 'getPostById' }, `Fetching post with id ${id}`);
+  logger.error(error, "tRPC error");
 ```
 
-For logging errors you can use `logger.error`:
+Let's see what we get in the New Relic UI and how it is correlated with the other data.
 
-```ts
-  logger.error(error, `Error fetching post with id ${id}`);
-```
+### Alerting
 
-### Alerting, alert policies and conditions and notifications
+New Relic Alerts allows you to set up alerts for your application and infrastructure data on virtually any metric you can imagine. You can set up an alert to notify you when a metric crosses a threshold you define.

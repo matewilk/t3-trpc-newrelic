@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
-type JsonPost = {
+type JsonPlaceholderPost = {
   id: string;
   title: string;
   body: string;
@@ -17,7 +17,9 @@ export const postsRouter = createTRPCRouter({
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/posts/${id}`
       );
-      return (await response.json()) as unknown as Promise<JsonPost>;
+      // Simulate random error
+      if (Math.random() <= 0.05) throw new Error("Random getPostById error");
+      return (await response.json()) as unknown as Promise<JsonPlaceholderPost>;
     }),
 
   getAllPosts: publicProcedure
@@ -29,6 +31,8 @@ export const postsRouter = createTRPCRouter({
       const response = await fetch(
         `https://jsonplaceholder.typicode.com/posts?_limit=${limit}&_page=${page}`
       );
-      return (await response.json()) as Promise<JsonPost[]>;
+      // Simulate random error
+      if (Math.random() <= 0.05) throw new Error("Random getAllPosts error");
+      return (await response.json()) as Promise<JsonPlaceholderPost[]>;
     }),
 });

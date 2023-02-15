@@ -29,7 +29,11 @@ const Post: NextPage<PostProps> = ({ id }) => {
         }}
       >
         <h2 className="pt-2 text-5xl font-extrabold tracking-tight text-white">
-          Post <span className="text-[hsl(280,100%,70%)]">{data?.id}</span>
+          Post{" "}
+          <span className="text-[hsl(280,100%,70%)]">
+            {/* // Simulate a 10% chance of a browser error */}
+            {Math.random() <= 0.1 ? data!.id : data?.id}
+          </span>
         </h2>
         <div className="flex flex-col items-start">
           <h3 className="py-6 text-3xl font-bold text-white">{data?.title}</h3>
@@ -60,7 +64,8 @@ export const getServerSideProps: GetServerSideProps<PostProps> = ({
 }): Promise<GetServerSidePropsResult<PostProps>> => {
   const id = query.id as string;
 
-  if (!id) {
+  // Simulate a 5% chance of a post not existing
+  if (Math.random() <= 0.05) {
     return new Promise((resolve) =>
       resolve({ props: { id: null as unknown as string } })
     );
