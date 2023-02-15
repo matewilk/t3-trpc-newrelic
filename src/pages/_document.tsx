@@ -41,7 +41,7 @@ class MyDocument extends Document<DocumentProps> {
           <Script
             id="newrelic-browser-agent"
             dangerouslySetInnerHTML={{ __html: this.props.browserTimingHeader }}
-            strategy="afterInteractive"
+            strategy="beforeInteractive"
           />
         </Head>
         <body>
