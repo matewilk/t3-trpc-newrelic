@@ -1,6 +1,7 @@
 import newrelic from "newrelic";
 import type { DocumentContext, DocumentInitialProps } from "next/document";
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 type DocumentProps = {
   browserTimingHeader: string;
@@ -37,9 +38,10 @@ class MyDocument extends Document<DocumentProps> {
     return (
       <Html>
         <Head>
-          <script
-            type="text/javascript"
+          <Script
+            id="newrelic-browser-agent"
             dangerouslySetInnerHTML={{ __html: this.props.browserTimingHeader }}
+            strategy="afterInteractive"
           />
         </Head>
         <body>
