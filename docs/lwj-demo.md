@@ -22,6 +22,18 @@ It uses the recommended [T3 Stack](https://create.t3.gg/) setup.
 ### A peak at what you will see in New Relic UI and what are we aiming for
 - show APM service map - the best way to visualize the relationships between services in our case relationships the client, server and third party services.
 
+### A brief introduction to MELT
+- MELT stands for Metrics, Events, Logs, Traces and is a set of metrics that can be used to measure the performance of your application.
+  - Metric - a numeric measurement of an application or system. Typically reported on a regular schedule.
+    - example: a count of events over a period of time or a rate of some event per minute
+    - example: a numeric status at a moment in time, such as the number of active users or the number of errors
+  - Event - a record of something that happened in your application. Events are typically reported when something happens. Events typically have a shape of a key value pair.
+    - example: a user clicks a button, a file is uploaded.
+    - example: vending machine dispenses a soda
+  - Log - is a message about a system used to understand the activity of the system and to diagnose problems.
+  - Trace - is a record of the path a request takes through your system. Traces are   typically reported when a request is received and when it is completed. It often refers to distributed tracing which is a way to monitor requests as they propagate through a distributed system.
+
+
 ### How to start
 
 1. clone the repo
@@ -296,3 +308,5 @@ Let's see what we get in the New Relic UI and how it is correlated with the othe
 ### Alerting
 
 New Relic Alerts allows you to set up alerts for your application and infrastructure data on virtually any metric you can imagine. You can set up an alert to notify you when a metric crosses a threshold you define.
+
+We'll go through the steps described in the [New Relic Alerts documentation](https://docs.newrelic.com/docs/alerts-applied-intelligence/new-relic-alerts/get-started/your-first-nrql-condition/). Just the basics, without diving into the details like fine tuning advanced signals.
