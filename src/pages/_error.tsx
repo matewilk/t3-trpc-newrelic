@@ -14,17 +14,7 @@ const Error: NextPage<Props> = ({ statusCode }) => {
   );
 };
 
-Error.getInitialProps = async ({ res, err }: NextPageContext) => {
-  if (typeof window == "undefined") {
-    // use dynamic import to avoid typescript error
-    // https://2ality.com/2017/01/import-operator.html
-    const newrelic = await import("newrelic");
-    newrelic.noticeError(err);
-  } else {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    window.newrelic.noticeError(err);
-  }
-
+Error.getInitialProps = ({ res, err }: NextPageContext) => {
   const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
   return { statusCode };
 };

@@ -60,7 +60,8 @@ export const getServerSideProps: GetServerSideProps<PostProps> = ({
 }): Promise<GetServerSidePropsResult<PostProps>> => {
   const id = query.id as string;
 
-  if (!id) {
+  // Simulate a 5% chance of a post not existing
+  if (Math.random() <= 0.05) {
     return new Promise((resolve) =>
       resolve({ props: { id: null as unknown as string } })
     );
