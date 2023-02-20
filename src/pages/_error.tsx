@@ -21,7 +21,6 @@ Error.getInitialProps = async ({ res, err }: NextPageContext) => {
     const newrelic = await import("newrelic");
     newrelic.noticeError(err);
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     window.newrelic.noticeError(err);
   }
 

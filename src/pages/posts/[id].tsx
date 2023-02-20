@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 
 import Layout from "../../components/layout";
 import { api } from "../../utils/api";
+import { logger } from "../../utils/logger";
 
 interface PostProps {
   id: string;
@@ -66,10 +67,13 @@ export const getServerSideProps: GetServerSideProps<PostProps> = ({
 
   // Simulate a 5% chance of a post not existing
   if (Math.random() <= 0.05) {
-    return new Promise((resolve) =>
-      resolve({ props: { id: null as unknown as string } })
-    );
+    return new Promise((resolve) => {
+      logger.error({ postId: "undefined" }, `Post ${id} not found`);
+      return resolve({ props: { id: null as unknown as string } });
+    });
   }
+
+  logger.info({ postId: id }, `Post ${id} requested`);
 
   return new Promise((resolve) => resolve({ props: { id } }));
 };

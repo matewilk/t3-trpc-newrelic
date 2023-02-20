@@ -8,6 +8,8 @@ type JsonPlaceholderPost = {
   body: string;
 };
 
+// const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
 export const postsRouter = createTRPCRouter({
   getPostById: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -19,6 +21,8 @@ export const postsRouter = createTRPCRouter({
       );
       // Simulate random error
       if (Math.random() <= 0.05) throw new Error("Random getPostById error");
+
+      // await delay(2000);
       return (await response.json()) as unknown as Promise<JsonPlaceholderPost>;
     }),
 
